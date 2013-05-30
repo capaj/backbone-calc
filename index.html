@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backbone-calc</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <div class="well" style="display: inline-block;">
+        <div id="display" class="row">
+
+        </div>
+        <div id="buttons">
+
+        </div>
+
+    </div>
+
+
+</body>
+<script type="text/javascript" src="./js/jquery-2.0.1.js"></script>
+<script type="text/javascript" src="./js/underscore.js"></script>
+<script type="text/javascript" src="./js/backbone.js"></script>
+<script type="text/javascript" src="./js/calc.js"></script>
+<script type="text/javascript">
+    $(function(){
+        var additionalSymbols = [
+            [
+                {s: 'sin',
+                    action: function () {
+                        var input = this.get('onDisplay');
+                        this.set('onDisplay', Math.sin(input));
+                    }
+                }
+            ]
+        ];
+        BACKBONE_CALC.init(additionalSymbols);
+    });
+</script>
+</html>

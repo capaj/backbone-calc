@@ -52,14 +52,12 @@ var BACKBONE_CALC = (function (calc) {
                 [
                     {s: '+',
                         action: function(){
-                            this.storeOnDisplayClearDisplay();
                             this.execute = this.typicalBehaviour(function (f, s) {
                                 return f+s;
                             });
                         }
                     },
                     {s: '-', action: function(){
-                        this.storeOnDisplayClearDisplay();
                         this.execute = this.typicalBehaviour(function (f, s, executionN) {
                             if (executionN>1) {
                                 return s-f;
@@ -69,14 +67,12 @@ var BACKBONE_CALC = (function (calc) {
                     }
                     },
                     {s: '*', action: function(){
-                        this.storeOnDisplayClearDisplay();
                         this.execute = this.typicalBehaviour(function (f, s) {
                             return f*s;
                         });
                     }
                     },
                     {s: '/', action: function(){
-                        this.storeOnDisplayClearDisplay();
                         this.execute = this.typicalBehaviour(function (f, s, executionN) {
                             if (executionN>1) {
                                 return s/f;
@@ -89,6 +85,7 @@ var BACKBONE_CALC = (function (calc) {
             ]
         },
         typicalBehaviour: function (callback) {     // this function tries to emulate how typical calculator does execution and memory handling when user presses = button
+            this.storeOnDisplayClearDisplay();
             var typicalComputation = function () {        // windows 7 calculator was used for reference
                 var consecutive = this.get('consecutiveExecutions');
                 var computation = function () {

@@ -12,9 +12,10 @@ var BACKBONE_CALC = (function (calc) {
         if (val === NaN || val === Infinity) {
             val = '';
         }
-//        if (val !== "") {
-//            this.execute = emptyFn;
-//        }
+        if (this.startNewNumber) {
+            this.startNewNumber = false;
+            val = '';
+        }
         this.set('onDisplay', val + event.target.innerHTML);
     };
 
@@ -57,34 +58,41 @@ var BACKBONE_CALC = (function (calc) {
                             });
                         }
                     },
-                    {s: '-', action: function(){
-                        this.execute = this.typicalBehaviour(function (f, s, executionN) {
-                            if (executionN>1) {
-                                return s-f;
-                            }
-                            return f-s;
-                        });
-                    }
+                    {s: '-',
+                        action: function(){
+                            this.execute = this.typicalBehaviour(function (f, s, executionN) {
+                                if (executionN>1) {
+                                    return s-f;
+                                }
+                                return f-s;
+                            });
+                        }
                     },
-                    {s: '*', action: function(){
-                        this.execute = this.typicalBehaviour(function (f, s) {
-                            return f*s;
-                        });
-                    }
+                    {s: '*',
+                        action: function(){
+                            this.execute = this.typicalBehaviour(function (f, s) {
+                                return f*s;
+                            });
+
+                        }
                     },
-                    {s: '/', action: function(){
-                        this.execute = this.typicalBehaviour(function (f, s, executionN) {
-                            if (executionN>1) {
-                                return s/f;
-                            }
-                            return f/s;
-                        });
-                    }
+                    {s: '/',
+                        action: function(){
+                            this.execute = this.typicalBehaviour(function (f, s, executionN) {
+                                if (executionN>1) {
+                                    return s/f;
+                                }
+                                return f/s;
+                            });
+
+                        }
                     }
                 ]
             ]
         },
+        startNewNumber: false,
         typicalBehaviour: function (callback) {     // this function tries to emulate how typical calculator does execution and memory handling when user presses = button
+            this.executeIfMemory();
             this.storeOnDisplayClearDisplay();
             var typicalComputation = function () {        // windows 7 calculator was used for reference
                 var consecutive = this.get('consecutiveExecutions');
@@ -103,7 +111,7 @@ var BACKBONE_CALC = (function (calc) {
         },
         storeOnDisplayClearDisplay: function () {
             this.set('memory', this.getNumber('onDisplay'));
-            this.set('onDisplay', '');
+            this.startNewNumber = true;
         },
         storeAndExecute: function (op) {
             var wasDisplayed = this.getNumber('onDisplay');
@@ -116,6 +124,11 @@ var BACKBONE_CALC = (function (calc) {
                 return 0;
             }
             return parseFloat(v);
+        },
+        executeIfMemory: function () {
+            if (this.get('memory')) {
+                this.execute();
+            }
         },
         execute: emptyFn,
         initialize: function(additionalSymbols){
@@ -155,7 +168,7 @@ var BACKBONE_CALC = (function (calc) {
         initialize: function(model){
             this.model = model;
             this.render();
-            this.listenTo(this.model, 'change', displayView.render);
+            this.listenTo(this.model, 'change:symbols', displayView.render);
         },
         render: function(){
 
